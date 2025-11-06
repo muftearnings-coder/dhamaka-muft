@@ -82,4 +82,4 @@ restart             – Restart the bot
 
 ---
 
-<p align="center"><b>Jai Shree Krishna 🙏😉</b></p>
+<p align="center"><b>jai Hind🙏😉</b></p>
