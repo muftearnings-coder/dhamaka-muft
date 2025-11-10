@@ -1,4 +1,4 @@
-#Join Telegram Channel - @DREAMXBOTZ
+#Join Telegram Channel - @TECHYUPDATEHQ
 
 from pyrogram import Client, filters, enums
 from pyrogram.types import ChatJoinRequest
@@ -18,3 +18,59 @@ async def join_reqs(client, message: ChatJoinRequest):
 async def del_requests(client, message):
     await db.del_join_req()    
     await message.reply("<b>⚙ ꜱᴜᴄᴄᴇꜱꜱғᴜʟʟʏ ᴄʜᴀɴɴᴇʟ ʟᴇғᴛ ᴜꜱᴇʀꜱ ᴅᴇʟᴇᴛᴇᴅ</b>")
+
+# ==============================
+# 🔥 Force Subscribe System 🔥
+# ==============================
+
+from pyrogram import Client, filters
+from pyrogram.errors import UserNotParticipant
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+import os, asyncio
+
+FORCE_SUB_CHANNEL = os.getenv("FORCE_SUB_CHANNEL")
+
+
+@Client.on_message(filters.private & filters.command("start"))
+async def stylish_force_sub(client, message):
+    if not FORCE_SUB_CHANNEL:
+        return await message.reply_text("⚠️ FORCE_SUB_CHANNEL variable set nahi hai!")
+
+    try:
+        user = await client.get_chat_member(FORCE_SUB_CHANNEL, message.from_user.id)
+        # Agar user member hai to welcome message bhejo
+        await message.reply_text(
+            f"⚡ <b>Welcome {message.from_user.first_name}!</b>\n\n"
+            f"Aapne hamara <b>TechyUpdate</b> channel join kar liya hai ✅\n\n"
+            f"<b>Enjoy Premium Features 😎</b>",
+            disable_web_page_preview=True
+        )
+
+    except UserNotParticipant:
+        # Agar user member nahi hai to join karne ka button bhejo
+        invite_link = f"https://t.me/{FORCE_SUB_CHANNEL[4:]}"  # removes '-100'
+        await message.reply_photo(
+            photo="https://i.ibb.co/RycJcDb/join-now.jpg",  # optional image
+            caption=(
+                "🚫 <b>Access Denied!</b>\n\n"
+                "Bot use karne ke liye pehle hamare <b>official channel</b> ko join karo 👇"
+            ),
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [InlineKeyboardButton("📢 Join TechyUpdate", url=invite_link)],
+                    [InlineKeyboardButton("✅ I've Joined", callback_data="check_sub")]
+                ]
+            ),
+        )
+
+
+@Client.on_callback_query(filters.regex("check_sub"))
+async def recheck_subscription(client, query):
+    try:
+        user = await client.get_chat_member(FORCE_SUB_CHANNEL, query.from_user.id)
+        await query.message.delete()
+        await query.message.reply_text(
+            "✅ <b>Thank You!</b>\n\nAb aap <b>TechyUpdate Bot</b> use kar sakte ho 😎"
+        )
+    except UserNotParticipant:
+        await query.answer("❌ Pehle channel join karo!", show_alert=True)
