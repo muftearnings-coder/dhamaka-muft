@@ -30,6 +30,8 @@ import os, asyncio
 
 AUTH_CHANNELS = os.getenv("AUTH_CHANNELS")
 
+print("🟢 Force Subscribe System Loaded:", AUTH_CHANNELS)
+
 @Client.on_message(filters.private & filters.command("start"))
 async def stylish_force_sub(client, message):
     if not AUTH_CHANNELS:
