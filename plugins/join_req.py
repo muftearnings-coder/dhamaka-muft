@@ -20,7 +20,7 @@ async def del_requests(client, message):
     await message.reply("<b>⚙ ꜱᴜᴄᴄᴇꜱꜱғᴜʟʟʏ ᴄʜᴀɴɴᴇʟ ʟᴇғᴛ ᴜꜱᴇʀꜱ ᴅᴇʟᴇᴛᴇᴅ</b>")
 
 # ==============================
-# 🔥 Force Subscribe System 🔥
+# 🔥 Force Subscribe System (TechyUpdate) 🔥
 # ==============================
 
 from pyrogram import Client, filters
@@ -32,26 +32,26 @@ AUTH_CHANNELS = os.getenv("AUTH_CHANNELS")
 
 @Client.on_message(filters.private & filters.command("start"))
 async def stylish_force_sub(client, message):
-    if not FORCE_SUB_CHANNEL:
-        return await message.reply_text("⚠️ FORCE_SUB_CHANNEL variable set nahi hai!")
+    if not AUTH_CHANNELS:
+        return await message.reply_text("⚙️ AUTH_CHANNELS variable set nahi hai!")
 
     try:
-        user = await client.get_chat_member(FORCE_SUB_CHANNEL, message.from_user.id)
-        # Agar user member hai to welcome message bhejo
+        user = await client.get_chat_member(AUTH_CHANNELS, message.from_user.id)
+        # Agar user member hai to normal welcome message
         await message.reply_text(
-            f"⚡ <b>Welcome {message.from_user.first_name}!</b>\n\n"
-            f"Aapne hamara <b>TechyUpdate</b> channel join kar liya hai ✅\n\n"
-            f"<b>Enjoy Premium Features 😎</b>",
+            f"✨ Welcome <b>{message.from_user.first_name}</b>!\n\n"
+            "Aapne hamara <b>TechyUpdate</b> channel join kar liya hai ✅\n\n"
+            "<b>Enjoy Premium Features 😎</b>",
             disable_web_page_preview=True
         )
 
     except UserNotParticipant:
-        # Agar user member nahi hai to join karne ka button bhejo
-        invite_link = f"https://t.me/{FORCE_SUB_CHANNEL[4:]}"  # removes '-100'
+        # Agar user member nahi hai to join message bhejna
+        invite_link = f"https://t.me/{AUTH_CHANNELS[4:]}"  # removes '-100'
         await message.reply_photo(
-            photo="https://i.ibb.co/RycJcDb/join-now.jpg",  # optional image
+            photo="https://i.ibb.co/RycJcDb/join-now.jpg",
             caption=(
-                "🚫 <b>Access Denied!</b>\n\n"
+                "🚨 <b>Access Denied!</b>\n\n"
                 "Bot use karne ke liye pehle hamare <b>official channel</b> ko join karo 👇"
             ),
             reply_markup=InlineKeyboardMarkup(
@@ -66,7 +66,7 @@ async def stylish_force_sub(client, message):
 @Client.on_callback_query(filters.regex("check_sub"))
 async def recheck_subscription(client, query):
     try:
-        user = await client.get_chat_member(FORCE_SUB_CHANNEL, query.from_user.id)
+        user = await client.get_chat_member(AUTH_CHANNELS, query.from_user.id)
         await query.message.delete()
         await query.message.reply_text(
             "✅ <b>Thank You!</b>\n\nAb aap <b>TechyUpdate Bot</b> use kar sakte ho 😎"
