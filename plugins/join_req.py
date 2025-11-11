@@ -51,19 +51,22 @@ async def stylish_force_sub(client, message):
         # Agar user member nahi hai to join message bhejna
         invite_link = f"https://t.me/{AUTH_CHANNELS[4:]}"  # removes '-100'
         await message.reply_photo(
-            photo="https://i.ibb.co/RycJcDb/join-now.jpg",
-            caption=(
-                "🚨 <b>Access Denied!</b>\n\n"
-                "Bot use karne ke liye pehle hamare <b>official channel</b> ko join karo 👇"
-            ),
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [InlineKeyboardButton("📢 Join TechyUpdate", url=invite_link)],
-                    [InlineKeyboardButton("✅ I've Joined", callback_data="check_sub")]
-                ]
-            ),
-        )
-
+    photo="https://i.ibb.co/RycJcDb/join-now.jpg",
+    caption=(
+        f"👋 **Hey {message.from_user.first_name}!**\n\n"
+        "🚫 <b>Ruko zara, sabr rakho!</b>\n"
+        "Aapne abhi tak hamara <b>Official Channel</b> join nahi kiya hai 😢\n\n"
+        "👇 Pehle neeche wale button se join karo,\n"
+        "fir bot ka full maza lo 😎🔥"
+    ),
+    reply_markup=InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("📢 Join Official Channel 📢", url=invite_link)],
+            [InlineKeyboardButton("✅ Done! I've Joined ✅", callback_data="check_sub")]
+        ]
+    ),
+)
+                    
 
 @Client.on_callback_query(filters.regex("check_sub"))
 async def recheck_subscription(client, query):
@@ -71,7 +74,8 @@ async def recheck_subscription(client, query):
         user = await client.get_chat_member(AUTH_CHANNELS, query.from_user.id)
         await query.message.delete()
         await query.message.reply_text(
-            "✅ <b>Thank You!</b>\n\nAb aap <b>TechyUpdate Bot</b> use kar sakte ho 😎"
-        )
-    except UserNotParticipant:
-        await query.answer("❌ Pehle channel join karo!", show_alert=True)
+    f"🎉 <b>Wah {query.from_user.first_name}!</b>\n\n"
+    "✅ Aapne hamara channel join kar liya hai 💖\n"
+    "Ab aap bot ka poora maza le sakte ho 😎\n\n"
+    "🔥 Enjoy karo aur doston ko bhi bolo — 'Bot mast hai re!' 🔥"
+)
