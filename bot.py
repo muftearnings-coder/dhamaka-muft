@@ -99,16 +99,3 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             logging.info('Service Stopped Bye 👋')
             break
-import threading, time, requests, os
-
-def keep_alive():
-    url = os.getenv("FQDN", "https://autofilter-premium-feature-1.onrender.com")
-    while True:
-        try:
-            requests.get(url)
-            print("🔄 Self-ping sent to keep bot awake")
-        except Exception as e:
-            print("⚠️ Ping failed:", e)
-        time.sleep(840)  # 14 minutes (840 seconds)
-
-threading.Thread(target=keep_alive).start()
