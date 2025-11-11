@@ -28,8 +28,7 @@ from pyrogram.errors import UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os, asyncio
 
-FORCE_SUB_CHANNEL = os.getenv("FORCE_SUB_CHANNEL")
-
+AUTH_CHANNELS = os.getenv("AUTH_CHANNELS")
 
 @Client.on_message(filters.private & filters.command("start"))
 async def stylish_force_sub(client, message):
