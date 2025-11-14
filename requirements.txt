@@ -35,7 +35,7 @@ pyromod
 colorama
 fuzzywuzzy
 Levenshtein==0.24.0
-
+rapidfuzz
 
 # Git-based Packages
 git+https://github.com/Joelkb/cinemagoer
