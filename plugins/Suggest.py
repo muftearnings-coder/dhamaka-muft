@@ -1,25 +1,37 @@
 from pyrogram import Client, filters
-from rapidfuzz import process
-from database.users_chats_db import db
+from rapidfuzz import fuzz
 
-@Client.on_message(filters.private & filters.command("suggest"))
-async def suggest_movies(client, message):
-    query = message.text.split(maxsplit=1)
-    if len(query) < 2:
-        return await message.reply("❗ Movie ka naam likho bro.\nExample: `/suggest pathaan`")
+MOVIES = [
+    "Animal", "Gadar 2", "Pathaan", "Avatar", "KGF",
+    "Pushpa", "Kantara", "Leo", "Jawan", "Salaar",
+    "Tiger Zinda Hai", "Don", "Raees"
+]
 
-    keyword = query[1].strip().lower()
+def best_match(query):
+    best = None
+    score = 0
+    for name in MOVIES:
+        sc = fuzz.partial_ratio(query.lower(), name.lower())
+        if sc > score:
+            best = name
+            score = sc
+    return best, score
 
-    files = await db.get_all_files()
-    file_names = [file.get("file_name", "") for file in files]
 
-    if not file_names:
-        return await message.reply("❌ Database me koi files nahi mila.")
-
-    results = process.extract(keyword, file_names, limit=10)
-
-    reply_msg = "🔍 **Top Suggestions:**\n\n"
-    for movie_name, score, _ in results:
-        reply_msg += f"🎬 **{movie_name}** — `{score}%`\n"
-
-    await message.reply(reply_msg)
+@Client.on_message(filters.text & ~filters.command & filters.private)
+async def suggest_handler(bot, msg):
+    text = msg.text
+    
+    # skip short words
+    if len(text) < 3:
+        return
+    
+    match, score = best_match(text)
+    
+    if score >= 70:
+        await msg.reply_text(
+            f"🔍 *Did you mean:* **{match}?**\n"
+            f"🤖 Confidence: {score}%\n\n"
+            "👉 Type again to get movie results.",
+            quote=True
+        )
