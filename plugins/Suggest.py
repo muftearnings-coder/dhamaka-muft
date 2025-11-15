@@ -1,37 +1,35 @@
 from pyrogram import Client, filters
-from rapidfuzz import fuzz
+from rapidfuzz import process
+from motor.motor_asyncio import AsyncIOMotorClient
+from config import DATABASE_URI, DATABASE_NAME, COLLECTION_NAME
 
-MOVIES = [
-    "Animal", "Gadar 2", "Pathaan", "Avatar", "KGF",
-    "Pushpa", "Kantara", "Leo", "Jawan", "Salaar",
-    "Tiger Zinda Hai", "Don", "Raees"
-]
+dbclient = AsyncIOMotorClient(DATABASE_URI)
+db = dbclient[DATABASE_NAME][COLLECTION_NAME]
 
-def best_match(query):
-    best = None
-    score = 0
-    for name in MOVIES:
-        sc = fuzz.partial_ratio(query.lower(), name.lower())
-        if sc > score:
-            best = name
-            score = sc
-    return best, score
+@Client.on_message(filters.command("suggest"))
+async def suggest_movie(client, message):
+    query = message.text.split(maxsplit=1)
 
-
-@Client.on_message(filters.text & ~filters.command & filters.private)
-async def suggest_handler(bot, msg):
-    text = msg.text
-    
-    # skip short words
-    if len(text) < 3:
-        return
-    
-    match, score = best_match(text)
-    
-    if score >= 70:
-        await msg.reply_text(
-            f"🔍 *Did you mean:* **{match}?**\n"
-            f"🤖 Confidence: {score}%\n\n"
-            "👉 Type again to get movie results.",
-            quote=True
+    if len(query) == 1:
+        return await message.reply(
+            "❗ Movie ka naam likho bro.\nExample: `/suggest pathaan`"
         )
+
+    movie_name = query[1].strip().lower()
+
+    files = await db.find({"title": {"$exists": True}}).to_list(5000)
+    movie_list = [file.get("title", "").lower() for file in files]
+
+    if not movie_list:
+        return await message.reply("❌ Database me movies nahi mili.")
+
+    suggestions = process.extract(movie_name, movie_list, limit=5)
+
+    if not suggestions:
+        return await message.reply("❌ Koi related movies nahi mili.")
+
+    final = "**🔍 Suggestions:**\n\n"
+    for mov, score, _ in suggestions:
+        final += f"🎬 {mov} — `{score}%`\n"
+
+    await message.reply(final)
