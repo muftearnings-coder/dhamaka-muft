@@ -224,7 +224,7 @@ Nᴀᴍᴇ : {}
 
 Mᴇꜱꜱᴀɢᴇ : <b>{}</b>"""
     
-    CAPTION = """<b><a href="https://t.me/TechyUpdateHQ">{file_name}</a></b>\n\n<b>⚜️ Powered By : <a href="https://t.me/MuftDeals">[ Muft Deals ]</a></b>"""
+    CAPTION = """<b><a href="https://t.me/TechyUpdateHQ">{file_name}</a></b>\n\n<b>⚜️ Powered By : <a href="https://t.me/https://t.me/TechyUpdateHQ">[ Muft Deals ]</a></b>"""
 
     
     MOVIE_UPDATE_NOTIFY_TXT = """
