@@ -17,7 +17,7 @@ aiohttp
 opencv-python-headless==4.8.1.78
 python-dotenv==0.21.1
 PyLeaves==1.0.2
-humanize
+humanize==4.9.0
 Pillow
 psutil
 numpy
