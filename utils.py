@@ -935,3 +935,18 @@ async def get_cap(settings, remaining_seconds, files, query, total_results, sear
     except Exception as e:
         logging.error(f"Error in get_cap: {e}")
         pass
+
+import aiohttp
+
+async def inshorturl_short(link, api_key):
+    url = "https://inshorturl.com/api"
+    params = {
+        "api": api_key,
+        "url": link
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, params=params) as resp:
+            data = await resp.json()
+            if data.get("status") == "success":
+                return data.get("shortenedUrl")
+            return link
