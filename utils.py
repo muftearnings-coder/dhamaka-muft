@@ -372,8 +372,7 @@ async def search_gagala(text):
     titles = soup.find_all( 'h3' )
     return [title.getText() for title in titles]
 
-async def get_shortlink(link,
-                        grp_id,
+async def get_shortlink(link, grp_id,
                         is_second_shortener=False,
                         is_third_shortener=False):
 
@@ -386,25 +385,33 @@ async def get_shortlink(link,
     else:
         api, site = settings['api'], settings['shortner']
 
-    # 🔥 INSHORTURL FIX
-    if site and "inshorturl.com" in site:
+    # 🔹 inshorturl
+    if "inshorturl.com" in site:
         try:
-            res = requests.get(
+            r = requests.get(
                 "https://inshorturl.com/api",
-                params={
-                    "api": api,
-                    "url": link
-                },
+                params={"api": api, "url": link},
                 timeout=10
             ).json()
+            if r.get("shortenedUrl"):
+                return r["shortenedUrl"]
+        except:
+            pass
 
-            if res.get("shortenedUrl"):
-                return res["shortenedUrl"]
+    # 🔹 gplinks
+    if "gplinks.com" in site:
+        try:
+            r = requests.get(
+                "https://api.gplinks.com/api",
+                params={"api": api, "url": link},
+                timeout=10
+            ).json()
+            if r.get("shortenedUrl"):
+                return r["shortenedUrl"]
+        except:
+            pass
 
-        except Exception:
-            return link   # agar fail ho jaye to original link
-
-    # ✅ baki shorteners ke liye Shortzy
+    # 🔹 fallback (shortzy supported)
     shortzy = Shortzy(api, site)
     try:
         link = await shortzy.convert(link)
