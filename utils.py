@@ -372,20 +372,45 @@ async def search_gagala(text):
     titles = soup.find_all( 'h3' )
     return [title.getText() for title in titles]
 
-async def get_shortlink(link, grp_id, is_second_shortener=False, is_third_shortener=False):
+async def get_shortlink(link,
+                        grp_id,
+                        is_second_shortener=False,
+                        is_third_shortener=False):
+
     settings = await get_settings(grp_id)
-    if is_third_shortener:             
+
+    if is_third_shortener:
         api, site = settings['api_three'], settings['shortner_three']
+    elif is_second_shortener:
+        api, site = settings['api_two'], settings['shortner_two']
     else:
-        if is_second_shortener:
-            api, site = settings['api_two'], settings['shortner_two']
-        else:
-            api, site = settings['api'], settings['shortner']
+        api, site = settings['api'], settings['shortner']
+
+    # 🔥 INSHORTURL FIX
+    if site and "inshorturl.com" in site:
+        try:
+            res = requests.get(
+                "https://inshorturl.com/api",
+                params={
+                    "api": api,
+                    "url": link
+                },
+                timeout=10
+            ).json()
+
+            if res.get("shortenedUrl"):
+                return res["shortenedUrl"]
+
+        except Exception:
+            return link   # agar fail ho jaye to original link
+
+    # ✅ baki shorteners ke liye Shortzy
     shortzy = Shortzy(api, site)
     try:
         link = await shortzy.convert(link)
-    except Exception as e:
+    except:
         link = await shortzy.get_quick_link(link)
+
     return link
 
 async def get_settings(group_id):
