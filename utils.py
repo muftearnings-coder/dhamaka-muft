@@ -396,7 +396,7 @@ async def get_shortlink(link, grp_id,
             if r.get("shortenedUrl"):
                 return r["shortenedUrl"]
         except:
-            pass
+            return link
 
     # 🔹 gplinks
     if "gplinks.com" in site:
@@ -409,14 +409,14 @@ async def get_shortlink(link, grp_id,
             if r.get("shortenedUrl"):
                 return r["shortenedUrl"]
         except:
-            pass
+            return link
 
-    # 🔹 fallback (shortzy supported)
+    # 🔹 baki sab (shortzy supported)
     shortzy = Shortzy(api, site)
     try:
-        link = await shortzy.convert(link)
+        return await shortzy.convert(link)
     except:
-        link = await shortzy.get_quick_link(link)
+        return await shortzy.get_quick_link(link)
 
     return link
 
