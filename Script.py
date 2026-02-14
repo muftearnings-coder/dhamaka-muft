@@ -224,7 +224,7 @@ Nᴀᴍᴇ : {}
 
 Mᴇꜱꜱᴀɢᴇ : <b>{}</b>"""
     
-    CAPTION = """<b><a href="https://t.me/TechyUpdateHQ">{file_name}</a></b>\n\n<b>⚜️ Powered By : <a href="https://t.me/hindimovies_indian">[ Hindi Movies ]</a></b>"""
+    CAPTION = """<b><a href="https://t.me/TechyUpdateHQ">{file_name}</a></b>\n\n<b>⚜️ Powered By : <a href="https://t.me/+fB-W-M1pZ3pjM2I1">[ 𝗗𝗿𝗮𝗺𝗮 𝗛𝘂𝗯 ]</a></b>"""
 
     
     MOVIE_UPDATE_NOTIFY_TXT = """
